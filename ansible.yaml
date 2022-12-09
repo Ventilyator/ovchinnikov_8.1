@@ -6,3 +6,27 @@
   gather_facts: true
   roles:
     - role_yc
+
+- name: install mariadb
+  hosts: database
+  become: yes
+  tasks:
+  - name: Install mariadb on RPM-based OS Family
+    yum:
+      name: mariadb-server
+      state: present
+    when:
+      ansible_os_family == "RedHat"
+
+  - name: Install mariadb on Deb-based OS Family
+    apt:
+      name: mariadb-server
+      state: present
+    when:
+      ansible_os_family == "Debian"
+
+  - name: mariadb systemd
+    systemd:
+      name: "mariadb.service"
+      enabled: yes
+      state: started
